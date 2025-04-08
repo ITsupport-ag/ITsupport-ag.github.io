@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Omino che cammina</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      overflow: hidden;
+      position: relative;
+    }
+    #pavimento {
+      position: absolute;
+      bottom: 54px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background-color: black;
+    }
+    #omino {
+      position: absolute;
+      bottom: 58px;
+      width: 60px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    .omino-part {
+      background-color: black;
+      transition: background-color 1s;
+    }
+    .testa {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+    .busto-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .busto {
+      width: 16px;
+      height: 70px;
+      border-radius: 5px;
+      z-index: 1;
+    }
+    .braccia {
+      position: absolute;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      width: 40px;
+    }
+    .braccio {
+      width: 10px;
+      height: 50px;
+      border-radius: 5px;
+      transform-origin: top center;
+      animation: muoviBraccia 0.6s infinite alternate;
+    }
+    .braccio.sinistro {
+      animation-delay: 0s;
+    }
+    .braccio.destro {
+      animation-delay: 0.3s;
+    }
+    .gambe {
+      display: flex;
+      gap: 15px;
+      margin-top: 5px;
+    }
+    .gamba {
+      width: 12px;
+      height: 50px;
+      border-radius: 5px;
+      animation: camminaGamba 0.6s infinite alternate;
+      transform-origin: top;
+    }
+    .gamba.destra {
+      animation-delay: 0.3s;
+    }
+    @keyframes camminaGamba {
+      from {
+        transform: rotate(25deg);
+      }
+      to {
+        transform: rotate(-25deg);
+      }
+    }
+    @keyframes muoviBraccia {
+      from {
+        transform: rotate(-30deg);
+      }
+      to {
+        transform: rotate(30deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="pavimento"></div>
+  <div id="omino">
+    <div class="testa omino-part"></div>
+    <div class="busto-container">
+      <div class="braccia">
+        <div class="braccio sinistro omino-part"></div>
+        <div class="braccio destro omino-part"></div>
+      </div>
+      <div class="busto omino-part"></div>
+    </div>
+    <div class="gambe">
+      <div class="gamba sinistra omino-part"></div>
+      <div class="gamba destra omino-part"></div>
+    </div>
+  </div>
+  <script>
+    const omino = document.getElementById('omino');
+    let posX = 0;
+    let direction = 1; // 1 = destra, -1 = sinistra
+    const speed = 2;
+
+    function moveOmino() {
+      const windowWidth = window.innerWidth;
+      posX += direction * speed;
+
+      if (posX + 60 >= windowWidth && direction === 1) {
+        direction = -1;
+        omino.style.transform = 'scaleX(-1)';
+      } else if (posX <= 0 && direction === -1) {
+        direction = 1;
+        omino.style.transform = 'scaleX(1)';
+      }
+
+      omino.style.left = `${posX}px`;
+      requestAnimationFrame(moveOmino);
+    }
+
+    moveOmino();
+
+    const colors = [
+      'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'magenta', 'lime', 'pink'
+    ];
+    let colorIndex = 0;
+    const parts = document.querySelectorAll('.omino-part');
+
+    setInterval(() => {
+      colorIndex = (colorIndex + 1) % colors.length;
+      parts.forEach(part => {
+        part.style.backgroundColor = colors[colorIndex];
+      });
+    }, 1000);
+  </script>
+</body>
+</html>
